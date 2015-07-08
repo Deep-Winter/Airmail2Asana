@@ -23,6 +23,6 @@
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2015 Deep Winter. All rights reserved.</string>
 	<key>NSPrincipalClass</key>
-	<string></string>
+	<string>Airmail2Asana</string>
 </dict>
 </plist>

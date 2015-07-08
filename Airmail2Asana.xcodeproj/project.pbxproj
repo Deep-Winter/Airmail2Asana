@@ -8,10 +8,32 @@
 
 /* Begin PBXBuildFile section */
 		46B693491B4DA6A900F75487 /* AMPluginFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46B693471B4DA64400F75487 /* AMPluginFramework.framework */; };
+		46B6934B1B4DA83000F75487 /* Airmail2Asana.m in Sources */ = {isa = PBXBuildFile; fileRef = 46B6934A1B4DA83000F75487 /* Airmail2Asana.m */; };
+		46B6934E1B4DAA8E00F75487 /* Airmail2Asana.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = 46CF4AAA1B4D9E0400B93670 /* Airmail2Asana.bundle */; };
+		46B693501B4DACEC00F75487 /* plugins-Airmail2Asana.png in Resources */ = {isa = PBXBuildFile; fileRef = 46B6934F1B4DACEC00F75487 /* plugins-Airmail2Asana.png */; };
+		46B693551B4DB0D700F75487 /* Airmail2AsanaConfigView.m in Sources */ = {isa = PBXBuildFile; fileRef = 46B693541B4DB0D700F75487 /* Airmail2AsanaConfigView.m */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		46B6934D1B4DAA6000F75487 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "/Users/lars/Library/Containers/it.bloop.airmail2/Data/Library/Application Support/Airmail/General/Plugins";
+			dstSubfolderSpec = 0;
+			files = (
+				46B6934E1B4DAA8E00F75487 /* Airmail2Asana.bundle in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		46B693471B4DA64400F75487 /* AMPluginFramework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AMPluginFramework.framework; path = Airmail2Asana/AMPluginFramework.framework; sourceTree = "<group>"; };
+		46B6934A1B4DA83000F75487 /* Airmail2Asana.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Airmail2Asana.m; sourceTree = "<group>"; };
+		46B6934C1B4DA84B00F75487 /* Airmail2Asana.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Airmail2Asana.h; sourceTree = "<group>"; };
+		46B6934F1B4DACEC00F75487 /* plugins-Airmail2Asana.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "plugins-Airmail2Asana.png"; sourceTree = "<group>"; };
+		46B693531B4DAFFD00F75487 /* Airmail2AsanaConfigView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Airmail2AsanaConfigView.h; sourceTree = "<group>"; };
+		46B693541B4DB0D700F75487 /* Airmail2AsanaConfigView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Airmail2AsanaConfigView.m; sourceTree = "<group>"; };
 		46CF4AAA1B4D9E0400B93670 /* Airmail2Asana.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Airmail2Asana.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		46CF4AAE1B4D9E0400B93670 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -49,6 +71,10 @@
 			isa = PBXGroup;
 			children = (
 				46CF4AAD1B4D9E0400B93670 /* Supporting Files */,
+				46B6934A1B4DA83000F75487 /* Airmail2Asana.m */,
+				46B6934C1B4DA84B00F75487 /* Airmail2Asana.h */,
+				46B693531B4DAFFD00F75487 /* Airmail2AsanaConfigView.h */,
+				46B693541B4DB0D700F75487 /* Airmail2AsanaConfigView.m */,
 			);
 			path = Airmail2Asana;
 			sourceTree = "<group>";
@@ -56,6 +82,7 @@
 		46CF4AAD1B4D9E0400B93670 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				46B6934F1B4DACEC00F75487 /* plugins-Airmail2Asana.png */,
 				46CF4AAE1B4D9E0400B93670 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -71,6 +98,7 @@
 				46CF4AA61B4D9E0400B93670 /* Sources */,
 				46CF4AA71B4D9E0400B93670 /* Frameworks */,
 				46CF4AA81B4D9E0400B93670 /* Resources */,
+				46B6934D1B4DAA6000F75487 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -117,6 +145,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				46B693501B4DACEC00F75487 /* plugins-Airmail2Asana.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -127,6 +156,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				46B693551B4DB0D700F75487 /* Airmail2AsanaConfigView.m in Sources */,
+				46B6934B1B4DA83000F75487 /* Airmail2Asana.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
