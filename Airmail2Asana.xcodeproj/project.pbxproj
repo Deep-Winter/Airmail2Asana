@@ -6,7 +6,12 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		46B693491B4DA6A900F75487 /* AMPluginFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46B693471B4DA64400F75487 /* AMPluginFramework.framework */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		46B693471B4DA64400F75487 /* AMPluginFramework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AMPluginFramework.framework; path = Airmail2Asana/AMPluginFramework.framework; sourceTree = "<group>"; };
 		46CF4AAA1B4D9E0400B93670 /* Airmail2Asana.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Airmail2Asana.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		46CF4AAE1B4D9E0400B93670 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -16,6 +21,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				46B693491B4DA6A900F75487 /* AMPluginFramework.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25,6 +31,7 @@
 		46CF4AA11B4D9E0400B93670 = {
 			isa = PBXGroup;
 			children = (
+				46B693471B4DA64400F75487 /* AMPluginFramework.framework */,
 				46CF4AAC1B4D9E0400B93670 /* Airmail2Asana */,
 				46CF4AAB1B4D9E0400B93670 /* Products */,
 			);
@@ -207,6 +214,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/lars/Downloads/Wunderlist-AMPlug-master/Wunderlist",
+					"$(PROJECT_DIR)/Airmail2Asana",
+				);
 				INFOPLIST_FILE = Airmail2Asana/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -219,6 +231,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/lars/Downloads/Wunderlist-AMPlug-master/Wunderlist",
+					"$(PROJECT_DIR)/Airmail2Asana",
+				);
 				INFOPLIST_FILE = Airmail2Asana/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
 				PRODUCT_NAME = "$(TARGET_NAME)";
