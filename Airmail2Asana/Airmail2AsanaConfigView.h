@@ -10,6 +10,10 @@
 #import <AMPluginFramework/AMPluginFramework.h>
 
 
+static NSString *const asana_apiKey   = @"asana_apiKey";
+static NSString *const wu_list          = @"wu_list";
+static NSString *const asana_user          = @"asana_user";
+
 @interface Airmail2AsanaConfigView : AMPView
 
 @end
