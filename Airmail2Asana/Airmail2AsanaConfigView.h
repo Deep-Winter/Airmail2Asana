@@ -15,7 +15,9 @@ static NSString *const asana_apiKey             = @"asana_apiKey";
 static NSString *const asana_userId             = @"asana_userId";
 static NSString *const asana_user               = @"asana_user";
 static NSString *const asana_workspaces         = @"asana_workspaces";
+static NSString *const asana_projects         = @"asana_projects";
 static NSString *const asana_selectedWorkspace  = @"asana_selectedWorkspace";
+static NSString *const asana_selectedWorkspaceIndex  = @"asana_selectedWorkspaceIndex";
 
 @interface Airmail2AsanaConfigView : AMPView<AsanaAPIProtocol,NSComboBoxDataSource, NSComboBoxDelegate>
 

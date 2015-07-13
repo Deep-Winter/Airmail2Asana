@@ -91,6 +91,7 @@
 -(id)ampMenuActionItem:(NSArray *)messages
 {
     NSMenuItem *sendToInbox = [[NSMenuItem alloc] initWithTitle:@"Send to Asana Inbox" action:nil keyEquivalent:@""];
+    [self LogTrace:@"BAUE MENU"];
     [sendToInbox setRepresentedObject:@""];
     return sendToInbox;
 }

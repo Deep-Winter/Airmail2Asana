@@ -10,6 +10,6 @@
 
 @protocol AsanaAPIProtocol <NSObject>
 
--(void)finishedCallFor: (NSString *)method withData: (NSDictionary*)dict;
+-(void)finishedCallFor: (NSString *)method withData: (NSDictionary*)dict orError:(NSError*)error;
 
 @end

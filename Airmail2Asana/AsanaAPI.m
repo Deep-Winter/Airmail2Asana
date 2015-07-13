@@ -25,6 +25,12 @@ static NSString *apiBaseUrl = @"https://app.asana.com/api/1.0/";
     return operationQueue;
 }
 
++(void)getProjectsForWorkspace: (NSString *)workspaceId withApiKey: (NSString *)apiKey andDelegate: (id<AsanaAPIProtocol>)delegate {
+    NSString* apiCommand = [NSString stringWithFormat: @"workspaces/%@/projects", workspaceId];
+    [self getDataFromAsanaApiCommand:apiCommand withApiKey:apiKey andDelegate:delegate];
+
+}
+
 +(void)getUserWithApiKey: (NSString *)apiKey andDelegate: (id<AsanaAPIProtocol>)delegate {
     
     NSString* apiCommand = @"users/me";
@@ -49,14 +55,13 @@ static NSString *apiBaseUrl = @"https://app.asana.com/api/1.0/";
                                
                                if (connectionError || !data) {
                                    NSLog(@"%@", connectionError.description);
-                                   [delegate finishedCallFor:apiCommand withData:nil];
+                                   [delegate finishedCallFor:apiCommand withData:nil orError:connectionError];
                                }
                                else {
                                    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-                                   [delegate finishedCallFor:apiCommand withData:dict];
+                                   [delegate finishedCallFor:apiCommand withData:dict orError:nil];
                                }
                            }];
-
 }
 
 + (NSURL *)createUrlForApiCommand:(NSString *)apiCommand {

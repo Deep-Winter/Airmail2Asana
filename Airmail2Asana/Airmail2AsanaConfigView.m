@@ -16,12 +16,17 @@
     NSButton *loginButton;
     NSTextField *apiKeyField;
     NSTextView *apiKeyLabel;
+    NSTextView *workspacesLabel;
     NSComboBox *workspacesCombobox;
+    
+    bool loadDataFromApi;
 }
 
 @property (strong) NSString *apiKey;
 @property (strong) NSArray *workspaces;
+@property (strong) NSArray *projectsOfSelectedWorkspace;
 @property (strong) NSString *selectedWorkspace;
+@property NSInteger selectedWorkspaceIndex;
 @property (strong) NSString *userName;
 @property (strong) NSString *userId;
 @end;
@@ -33,7 +38,7 @@
     self = [super initWithFrame:frame plugin:pluginIn];
     if (self)
     {
-        loginButton = [[NSButton alloc] initWithFrame:CGRectMake(20, 55, 350, 30.0f)];
+        loginButton = [[NSButton alloc] initWithFrame:CGRectMake(95, 30, 150, 30.0f)];
         [loginButton setTitle:@"Connect to Asana"];
         [loginButton setButtonType:NSMomentaryPushInButton];
         [loginButton setBezelStyle:NSRoundedBezelStyle];
@@ -41,18 +46,27 @@
         [loginButton setAction:@selector(Login:)];
         [self addSubview:loginButton];
     
-        apiKeyLabel = [[NSTextView alloc] initWithFrame:NSMakeRect(20, 0, 350, 25)];
+        apiKeyLabel = [[NSTextView alloc] initWithFrame:NSMakeRect(0, 5, 100, 25)];
+        [apiKeyLabel setTextColor:[NSColor secondaryLabelColor]];
         [apiKeyLabel setString:@"API Key:"];
         [apiKeyLabel setDrawsBackground:NO];
         [apiKeyLabel setEditable:NO];
         [apiKeyLabel setSelectable:NO];
         [self addSubview:apiKeyLabel];
         
-        apiKeyField = [[NSTextField alloc] initWithFrame:NSMakeRect(20, 25, 350, 25)];
+        apiKeyField = [[NSTextField alloc] initWithFrame:NSMakeRect(100, 0, 250, 25)];
         [apiKeyField setEditable:YES];
         [self addSubview:apiKeyField];
 
-        workspacesCombobox = [[NSComboBox alloc] initWithFrame:CGRectMake(20, 85, 350, 30.0f)];
+        workspacesLabel = [[NSTextView alloc] initWithFrame:NSMakeRect(0, 68, 100, 25)];
+        [workspacesLabel setTextColor:[NSColor secondaryLabelColor]];
+        [workspacesLabel setString:@"Workspaces:"];
+        [workspacesLabel setDrawsBackground:NO];
+        [workspacesLabel setEditable:NO];
+        [workspacesLabel setSelectable:NO];
+        [self addSubview:workspacesLabel];
+        
+        workspacesCombobox = [[NSComboBox alloc] initWithFrame:CGRectMake(100, 60, 250, 30.0f)];
         [workspacesCombobox setEnabled:NO];
         workspacesCombobox.usesDataSource = true;
         workspacesCombobox.dataSource = self;
@@ -84,6 +98,12 @@
     if(self.plugin.preferences[asana_selectedWorkspace])
         self.selectedWorkspace = [NSString stringWithFormat:@"%@",self.plugin.preferences[asana_selectedWorkspace]];
     
+    if(self.plugin.preferences[asana_selectedWorkspaceIndex])
+        self.selectedWorkspaceIndex = [NSString stringWithFormat:@"%@",self.plugin.preferences[asana_selectedWorkspaceIndex]].intValue;
+    
+    if(self.plugin.preferences[asana_projects])
+        self.projectsOfSelectedWorkspace = self.plugin.preferences[asana_projects];
+    
     [self updateUI];
 }
 
@@ -93,6 +113,8 @@
     self.userId = @"";
     self.workspaces = nil;
     self.selectedWorkspace = @"";
+    self.projectsOfSelectedWorkspace = [[NSMutableArray alloc] initWithCapacity:0];
+    self.selectedWorkspaceIndex = -1;
 }
 
 - (void) SavePreferences
@@ -102,6 +124,9 @@
     self.plugin.preferences[asana_user] = self.userName;
     self.plugin.preferences[asana_selectedWorkspace] = self.selectedWorkspace;
     self.plugin.preferences[asana_workspaces] = self.workspaces;
+    self.plugin.preferences[asana_projects] = self.projectsOfSelectedWorkspace;
+    self.plugin.preferences[asana_selectedWorkspaceIndex] =
+        [NSString stringWithFormat:@"%d",(int)self.selectedWorkspaceIndex];
     [self.plugin SavePreferences];
 }
 
@@ -109,7 +134,9 @@
 {
     [self.plugin LogTrace:@"Trying to connect to Asana API"];
 
+    [self resetProperties];
     self.apiKey = [apiKeyField stringValue];
+    
     [AsanaAPI getUserWithApiKey: self.apiKey andDelegate: self];
 }
 
@@ -118,22 +145,37 @@
     return (Airmail2Asana*)self.plugin;
 }
 
--(void)finishedCallFor:(NSString *)method withData:(NSDictionary *)dict {
+-(void)finishedCallFor:(NSString *)method withData:(NSDictionary *)dict orError:(NSError *)error {
     [self.plugin LogTrace:[NSString stringWithFormat:@"Asana API call finished: %@", method ]];
 
     if ([method isEqualToString:@"users/me"]) {
-        if (dict) {
+        if (!error && dict) {
             self.userName = [NSString stringWithFormat:@"%@",dict[@"data"][@"name"]];
             self.userId = [NSString stringWithFormat:@"%@",dict[@"data"][@"id"]];
             self.workspaces = dict[@"data"][@"workspaces"];
             [self.plugin LogTrace:[NSString stringWithFormat:@"Connected to Asana user: %@", self.userName]];
         }
         else {
+            if (error) {
+                [self.plugin LogError:error.description];
+                [self.plugin LogError:error.debugDescription];
+            }
             [self resetProperties];
         }
         
         [self SavePreferences];
         [self updateUI];
+    }
+    
+    if([method hasPrefix:@"workspaces/"]) {
+        if (dict) {
+            self.projectsOfSelectedWorkspace = dict[@"data"];
+        }
+        else {
+            self.projectsOfSelectedWorkspace = [[NSMutableArray alloc] initWithCapacity:0];
+        }
+        [workspacesCombobox setEnabled: YES];
+        [self SavePreferences];
     }
 }
 
@@ -143,15 +185,15 @@
     if (self.workspaces) {
         [workspacesCombobox setEnabled: YES];
         [workspacesCombobox reloadData];
-        if([self.selectedWorkspace isEqualToString:@""]) {
+        if([self.selectedWorkspace isEqualToString:@""] || self.selectedWorkspaceIndex == -1) {
             [workspacesCombobox selectItemAtIndex:0];
         } else {
-            //[workspacesCombobox selectItemWithObjectValue:self.selectedWorkspace];
+            [workspacesCombobox selectItemAtIndex:self.selectedWorkspaceIndex];
         }
     } else {
         [workspacesCombobox setEnabled: NO];
-        
     }
+    //loadDataFromApi = YES;
 }
 
 - (NSInteger)numberOfItemsInComboBox:(NSComboBox *)aComboBox {
@@ -164,8 +206,16 @@
 }
 
 - (void)comboBoxSelectionDidChange:(NSNotification *)notification {
+    //if (!loadDataFromApi) return;
+    
     if(!self.workspaces || workspacesCombobox.numberOfItems == 0 ) return;
-    self.selectedWorkspace = [NSString stringWithFormat:@"%@", self.workspaces[workspacesCombobox.indexOfSelectedItem][@"id"]];
-    [self SavePreferences];
+    self.selectedWorkspaceIndex =workspacesCombobox.indexOfSelectedItem;
+    self.selectedWorkspace = [NSString stringWithFormat:@"%@", self.workspaces[self.selectedWorkspaceIndex][@"id"]];
+    //self.projectsOfSelectedWorkspace =
+    //[self SavePreferences];
+    
+    [workspacesCombobox setEnabled:NO];
+    [AsanaAPI getProjectsForWorkspace:self.selectedWorkspace withApiKey:self.apiKey andDelegate:self];
+    
 }
 @end

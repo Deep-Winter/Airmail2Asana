@@ -263,7 +263,6 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"/Users/lars/Downloads/Wunderlist-AMPlug-master/Wunderlist",
 					"$(PROJECT_DIR)/Airmail2Asana",
 				);
 				INFOPLIST_FILE = Airmail2Asana/Info.plist;
@@ -280,7 +279,6 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"/Users/lars/Downloads/Wunderlist-AMPlug-master/Wunderlist",
 					"$(PROJECT_DIR)/Airmail2Asana",
 				);
 				INFOPLIST_FILE = Airmail2Asana/Info.plist;

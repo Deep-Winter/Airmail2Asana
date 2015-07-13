@@ -11,5 +11,6 @@
 @interface AsanaAPI : NSObject
 
 +(void)getUserWithApiKey: (NSString *)apiKey andDelegate: (id)delegate;
++(void)getProjectsForWorkspace: (NSString *)workspaceId withApiKey: (NSString*)apiKey andDelegate: (id)delegate;
 
 @end
