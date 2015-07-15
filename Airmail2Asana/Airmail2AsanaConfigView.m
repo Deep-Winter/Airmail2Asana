@@ -111,7 +111,7 @@
     self.apiKey = @"";
     self.userName = @"";
     self.userId = @"";
-    self.workspaces = nil;
+    self.workspaces = [[NSMutableArray alloc] initWithCapacity:0];
     self.selectedWorkspace = @"";
     self.projectsOfSelectedWorkspace = [[NSMutableArray alloc] initWithCapacity:0];
     self.selectedWorkspaceIndex = -1;
@@ -127,6 +127,7 @@
     self.plugin.preferences[asana_projects] = self.projectsOfSelectedWorkspace;
     self.plugin.preferences[asana_selectedWorkspaceIndex] =
         [NSString stringWithFormat:@"%d",(int)self.selectedWorkspaceIndex];
+    
     [self.plugin SavePreferences];
 }
 
@@ -137,18 +138,7 @@
     [self resetProperties];
     self.apiKey = [apiKeyField stringValue];
     
-    [AsanaAPI getUserWithApiKey: self.apiKey andDelegate: self];
-}
-
-- (Airmail2Asana*) myPlugin
-{
-    return (Airmail2Asana*)self.plugin;
-}
-
--(void)finishedCallFor:(NSString *)method withData:(NSDictionary *)dict orError:(NSError *)error {
-    [self.plugin LogTrace:[NSString stringWithFormat:@"Asana API call finished: %@", method ]];
-
-    if ([method isEqualToString:@"users/me"]) {
+    [AsanaAPI getUserWithApiKey: self.apiKey resultHandler:^(NSDictionary *dict, NSError *error) {
         if (!error && dict) {
             self.userName = [NSString stringWithFormat:@"%@",dict[@"data"][@"name"]];
             self.userId = [NSString stringWithFormat:@"%@",dict[@"data"][@"id"]];
@@ -159,32 +149,28 @@
             if (error) {
                 [self.plugin LogError:error.description];
                 [self.plugin LogError:error.debugDescription];
+                [(Airmail2Asana*)self.plugin PostError:error];
             }
             [self resetProperties];
         }
         
         [self SavePreferences];
         [self updateUI];
-    }
-    
-    if([method hasPrefix:@"workspaces/"]) {
-        if (dict) {
-            self.projectsOfSelectedWorkspace = dict[@"data"];
-        }
-        else {
-            self.projectsOfSelectedWorkspace = [[NSMutableArray alloc] initWithCapacity:0];
-        }
-        [workspacesCombobox setEnabled: YES];
-        [self SavePreferences];
-    }
+
+    }];
+}
+
+- (Airmail2Asana*) myPlugin
+{
+    return (Airmail2Asana*)self.plugin;
 }
 
 -(void)updateUI {
     
     [apiKeyField setStringValue: self.apiKey];
-    if (self.workspaces) {
+    [workspacesCombobox reloadData];
+    if (self.workspaces && self.workspaces.count > 0) {
         [workspacesCombobox setEnabled: YES];
-        [workspacesCombobox reloadData];
         if([self.selectedWorkspace isEqualToString:@""] || self.selectedWorkspaceIndex == -1) {
             [workspacesCombobox selectItemAtIndex:0];
         } else {
@@ -193,7 +179,6 @@
     } else {
         [workspacesCombobox setEnabled: NO];
     }
-    //loadDataFromApi = YES;
 }
 
 - (NSInteger)numberOfItemsInComboBox:(NSComboBox *)aComboBox {
@@ -206,16 +191,32 @@
 }
 
 - (void)comboBoxSelectionDidChange:(NSNotification *)notification {
-    //if (!loadDataFromApi) return;
     
     if(!self.workspaces || workspacesCombobox.numberOfItems == 0 ) return;
+    
     self.selectedWorkspaceIndex =workspacesCombobox.indexOfSelectedItem;
     self.selectedWorkspace = [NSString stringWithFormat:@"%@", self.workspaces[self.selectedWorkspaceIndex][@"id"]];
-    //self.projectsOfSelectedWorkspace =
-    //[self SavePreferences];
     
     [workspacesCombobox setEnabled:NO];
-    [AsanaAPI getProjectsForWorkspace:self.selectedWorkspace withApiKey:self.apiKey andDelegate:self];
-    
+    [AsanaAPI getProjectsForWorkspace:self.selectedWorkspace withApiKey:self.apiKey resultHandler:^(NSArray *arr, NSError *err) {
+        if (!err && arr) {
+            
+            NSSortDescriptor *nameDescriptor =
+            [[NSSortDescriptor alloc] initWithKey:@"name"
+                                        ascending:YES
+                                         selector:@selector(localizedCaseInsensitiveCompare:)];
+            NSArray *descriptors = [NSArray arrayWithObjects:nameDescriptor, nil];
+            
+            self.projectsOfSelectedWorkspace = [arr sortedArrayUsingDescriptors:descriptors];
+        }
+        else {
+            self.projectsOfSelectedWorkspace = [[NSMutableArray alloc] initWithCapacity:0];
+            [(Airmail2Asana*)self.plugin PostError:err];
+        }
+        
+        [workspacesCombobox setEnabled: YES];
+        [self SavePreferences];
+    }];
 }
+
 @end

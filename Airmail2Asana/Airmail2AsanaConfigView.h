@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import <AMPluginFramework/AMPluginFramework.h>
-#import "AsanaAPIProtocol.h"
 
 
 static NSString *const asana_apiKey             = @"asana_apiKey";
@@ -19,6 +18,6 @@ static NSString *const asana_projects         = @"asana_projects";
 static NSString *const asana_selectedWorkspace  = @"asana_selectedWorkspace";
 static NSString *const asana_selectedWorkspaceIndex  = @"asana_selectedWorkspaceIndex";
 
-@interface Airmail2AsanaConfigView : AMPView<AsanaAPIProtocol,NSComboBoxDataSource, NSComboBoxDelegate>
+@interface Airmail2AsanaConfigView : AMPView<NSComboBoxDataSource, NSComboBoxDelegate>
 
 @end

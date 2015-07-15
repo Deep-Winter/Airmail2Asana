@@ -31,7 +31,6 @@
 /* Begin PBXFileReference section */
 		4694D0B11B52E181007D50B6 /* AsanaAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsanaAPI.h; sourceTree = "<group>"; };
 		4694D0B21B52E181007D50B6 /* AsanaAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AsanaAPI.m; sourceTree = "<group>"; };
-		4694D0B41B52EDE8007D50B6 /* AsanaAPIProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AsanaAPIProtocol.h; sourceTree = "<group>"; };
 		46B693471B4DA64400F75487 /* AMPluginFramework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AMPluginFramework.framework; path = Airmail2Asana/AMPluginFramework.framework; sourceTree = "<group>"; };
 		46B6934A1B4DA83000F75487 /* Airmail2Asana.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Airmail2Asana.m; sourceTree = "<group>"; };
 		46B6934C1B4DA84B00F75487 /* Airmail2Asana.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Airmail2Asana.h; sourceTree = "<group>"; };
@@ -59,7 +58,6 @@
 			children = (
 				4694D0B11B52E181007D50B6 /* AsanaAPI.h */,
 				4694D0B21B52E181007D50B6 /* AsanaAPI.m */,
-				4694D0B41B52EDE8007D50B6 /* AsanaAPIProtocol.h */,
 			);
 			name = API;
 			sourceTree = "<group>";

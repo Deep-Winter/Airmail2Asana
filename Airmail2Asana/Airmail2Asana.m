@@ -90,10 +90,43 @@
 
 -(id)ampMenuActionItem:(NSArray *)messages
 {
-    NSMenuItem *sendToInbox = [[NSMenuItem alloc] initWithTitle:@"Send to Asana Inbox" action:nil keyEquivalent:@""];
-    [self LogTrace:@"BAUE MENU"];
-    [sendToInbox setRepresentedObject:@""];
-    return sendToInbox;
+    NSMenuItem *sendToAsanaMenu = [[NSMenuItem alloc] initWithTitle:@"Send to Asana Inbox" action:nil keyEquivalent:@""];
+    
+    NSString *apikey = self.preferences[asana_apiKey];
+    if(apikey && apikey.length > 0) {
+      
+            NSMenu *menu    = [[NSMenu alloc] initWithTitle:@"Projects"];
+            NSArray *lists = self.preferences[asana_projects];
+        
+            for(NSDictionary *item in lists)
+            {
+                NSMenuItem *listItem = [[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"%@",item[@"name"]] action:nil keyEquivalent:@""];
+                [listItem setRepresentedObject:item];
+                [listItem setAction:@selector(sendToAsana:)];
+                [listItem setTarget:self];
+                [menu addItem:listItem];
+            
+            }
+        
+            [sendToAsanaMenu setSubmenu:menu];
+        
+        
+    }
+    
+    [sendToAsanaMenu setRepresentedObject:@""];
+    return sendToAsanaMenu;
+}
+
+
+-(void) sendToAsana:(NSMenuItem *)item
+{
+    
+    @try
+    {
+    }
+    @catch (NSException *exception) {
+        NSLog(@"Exception sendToAsana %@",exception);
+    }
 }
 
 

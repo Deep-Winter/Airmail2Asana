@@ -10,7 +10,7 @@
 
 @interface AsanaAPI : NSObject
 
-+(void)getUserWithApiKey: (NSString *)apiKey andDelegate: (id)delegate;
-+(void)getProjectsForWorkspace: (NSString *)workspaceId withApiKey: (NSString*)apiKey andDelegate: (id)delegate;
++(void)getUserWithApiKey: (NSString *)apiKey resultHandler:(void (^)(NSDictionary *dic, NSError*err))resultHandler;
++(void)getProjectsForWorkspace: (NSString *)workspaceId withApiKey: (NSString*)apiKey resultHandler:(void (^)(NSArray *arr, NSError*err))resultHandler;
 
 @end
