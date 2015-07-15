@@ -43,6 +43,56 @@ static NSString *apiBaseUrl = @"https://app.asana.com/api/1.0/";
     }];
 }
 
++(void)createTaskWithApiKey: (NSString *)apiKey andTitle: (NSString*)title andNotes: (NSString*)notes inWorkspace: (NSString*)workspace andProject: (NSString*) project resultHandler:(void (^)(NSDictionary *dict, NSError* err))resultHandler{
+    
+    NSURL *apiUrl = [self createUrlForApiCommand:@"tasks"];
+    
+    NSMutableURLRequest *request = [self createRequestWithUrl:apiUrl andAPIKey:apiKey];
+    [request setHTTPMethod:@"POST"];
+    NSString *postBody = [NSString stringWithFormat:@"projects=%@&workspace=%@&name=%@&notes=%@", project, workspace, [self URLEncodedString_ch:title],[self URLEncodedString_ch:notes]];
+    [request setHTTPBody:[postBody dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    [NSURLConnection sendAsynchronousRequest:request
+                                       queue:[self operationQueue]
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                               
+                               if (connectionError || !data) {
+                                   resultHandler(nil,connectionError);
+                               } else {
+                                   NSError *parseError;
+                                   NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error: &parseError];
+                                   
+                                   if(parseError) {
+                                       resultHandler(nil, parseError);
+                                   }
+                                   else {
+                                       resultHandler(dict, nil);
+                                   }
+                                   
+                               }
+                           }];
+}
+
++ (NSString *) URLEncodedString_ch: (NSString *)input {
+    NSMutableString * output = [NSMutableString string];
+    const unsigned char * source = (const unsigned char *)[input UTF8String];
+    int sourceLen = (int)strlen((const char *)source);
+    for (int i = 0; i < sourceLen; ++i) {
+        const unsigned char thisChar = source[i];
+        if (thisChar == ' '){
+            [output appendString:@"+"];
+        } else if (thisChar == '.' || thisChar == '-' || thisChar == '_' || thisChar == '~' ||
+                   (thisChar >= 'a' && thisChar <= 'z') ||
+                   (thisChar >= 'A' && thisChar <= 'Z') ||
+                   (thisChar >= '0' && thisChar <= '9')) {
+                    [output appendFormat:@"%c", thisChar];
+        } else {
+            [output appendFormat:@"%%%02X", thisChar];
+        }
+    }
+    return output;
+}
+
 + (void)getDataFromAsanaApiCommand:(NSString *)apiCommand withApiKey:(NSString *)apiKey
                      resultHandler:(void (^)(NSDictionary *data,
                                              NSError *connectionError))resultHandler {

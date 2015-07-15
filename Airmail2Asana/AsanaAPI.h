@@ -11,6 +11,9 @@
 @interface AsanaAPI : NSObject
 
 +(void)getUserWithApiKey: (NSString *)apiKey resultHandler:(void (^)(NSDictionary *dic, NSError*err))resultHandler;
+
 +(void)getProjectsForWorkspace: (NSString *)workspaceId withApiKey: (NSString*)apiKey resultHandler:(void (^)(NSArray *arr, NSError*err))resultHandler;
+
++(void)createTaskWithApiKey: (NSString *)apiKey andTitle: (NSString*)title andNotes: (NSString*)notes inWorkspace: (NSString*)workspace andProject: (NSString*) project resultHandler:(void (^)(NSDictionary *dict, NSError* err))resultHandler;
 
 @end

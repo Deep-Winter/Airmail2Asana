@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "Airmail2Asana.h"
 #import "Airmail2AsanaConfigView.h"
+#import "AsanaAPI.h"
 
 @implementation Airmail2Asana
 
@@ -17,7 +18,6 @@
     self = [super initWithbundle:bundleIn path:pathIn];
     if (self)
     {
-        
     }
     return self;
 }
@@ -28,21 +28,6 @@
         return NO;
     
     return YES;
-}
-
--(void)Enable
-{
-    
-}
-
--(void)Disable
-{
-    
-}
-
--(void)Invalid
-{
-    
 }
 
 -(NSString *)nametext
@@ -57,17 +42,17 @@
 
 -(NSString *)descriptiontext
 {
-    return @"Integrate Asana and AirMail, for easy creating tasks in Ansana.";
+    return @"Integrate Asana into AirMail 2, for easy creating tasks from emails.";
 }
 
 -(NSString *)authortext
 {
-    return @"Lars Winter";
+    return @"DeepWinter";
 }
 
 -(NSString *)supportlink
 {
-    return @"http://www.deep-winter.com";
+    return @"https://github.com/Deep-Winter/Airmail2Asana/wiki";
 }
 
 -(AMPView *)pluginview
@@ -109,26 +94,65 @@
             }
         
             [sendToAsanaMenu setSubmenu:menu];
-        
-        
     }
     
     [sendToAsanaMenu setRepresentedObject:@""];
+    
     return sendToAsanaMenu;
 }
 
 
 -(void) sendToAsana:(NSMenuItem *)item
 {
-    
     @try
     {
+        NSString *apiKey = self.preferences[asana_apiKey];
+        if(apiKey.length == 0)
+            return;
+        
+        NSString *workspaceId = self.preferences[asana_selectedWorkspace];
+        if (workspaceId.length == 0)
+            return;
+        
+        AMPMenuAction *action = item.representedObject;
+        NSDictionary *project    = (NSDictionary*)action.representedObject;
+        NSString* projectId = project[@"id"];
+        
+        if(action && [action isKindOfClass:[AMPMenuAction class]])
+        {
+            for ( int i = 0; i < action.messages.count; i ++ )
+            {
+                AMPMessage *msg = (AMPMessage *)[action.messages objectAtIndex:i];
+                
+                //NSString *url   = [msg callSelector:@selector(urlformessage)];
+                //if(!url || url.length == 0)
+                 //   url = @"";
+                
+                NSString *subject = msg.subject;
+                if(!subject || subject.length == 0)
+                    subject = @"";
+                
+                NSString *body = msg.htmlBody;
+                if (!body || body.length == 0)
+                    body = @"";
+                
+                [AsanaAPI createTaskWithApiKey:apiKey andTitle:subject andNotes:body inWorkspace:workspaceId andProject:projectId resultHandler:^(NSDictionary *dict, NSError *err) {
+                    
+                    if(err)
+                    {
+                        [self PostError:err];
+                        return;
+                    }
+                    
+                    [[NSSound soundNamed:@"Hero"] play];
+                }];
+            }
+        }
     }
     @catch (NSException *exception) {
         NSLog(@"Exception sendToAsana %@",exception);
     }
 }
-
 
 - (void) PostError:(NSError*)error
 {
